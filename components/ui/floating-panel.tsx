@@ -393,17 +393,19 @@ export function OptimalPositionSizeCalculator({
             <span className="text-green-500">{finalCalculatedValue.toFixed(2)}</span>{" "}
             according to the Kelly Criterion
           </strong>
-          <p className="text-gray-500">
+          <br />
+          <p className="text-white">
             With <span className="text-green-500"><select
           className="mr-2 p-2 rounded-md"
           onChange={(e) => setLeverage(Number(e.target.value))}
         >
-          <option value="10">10x</option>
-          <option value="20">20x</option>
-          <option value="50">50x</option>
-          <option value="100">100x</option>
-          <option value="500">500x</option>
-          <option value="1000">1000x</option>
+          <option value="10">10x (10%)</option>
+          <option value="20">20x (20%)</option>
+          <option value="50">50x (50%)</option>
+          <option value="100">100x (100%)</option>
+          <option value="500">500x (500%)</option>
+          <option value="1000" className="text-red-500">1000x (1000%)</option>
+
         </select></span>a 
         
         

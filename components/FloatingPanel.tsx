@@ -49,52 +49,68 @@ function FloatingPanelInput() {
   )
 }
 
-const ColorPickerFloatingPanel = () => {
-  const colors = [
-    "#FF5733",
-    "#33FF57",
-    "#3357FF",
-    "#FF33F1",
-    "#33FFF1",
-    "#F1FF33",
-  ]
+const OptimalLeverageCalculator = () => {
+  const [averageReturn, setAverageReturn] = React.useState<number>(0);
+  const [riskFreeRate, setRiskFreeRate] = React.useState<number>(0);
+  const [variance, setVariance] = React.useState<number>(0);
+  const [optimalLeverage, setOptimalLeverage] = React.useState<number | null>(null);
+
+  const calculateOptimalLeverage = () => {
+    const fStar = (averageReturn - riskFreeRate) / variance;
+    setOptimalLeverage(fStar / 2); // Using half-Kelly betting
+  };
 
   return (
     <FloatingPanelRoot>
       <FloatingPanelTrigger
-        title="Choose Color"
+        title="Optimal Leverage"
         className="flex items-center space-x-2 px-4 py-2 bg-secondary text-secondary-foreground rounded-md hover:bg-secondary/90 transition-colors"
       >
-        <span>Leverage</span>
+        <span>Optimal Leverage</span>
       </FloatingPanelTrigger>
       <FloatingPanelContent className="w-64">
         <FloatingPanelBody>
-          <div className="grid grid-cols-3 gap-2">
-            <AnimatePresence>
-              {colors.map((color) => (
-                <motion.button
-                  key={color}
-                  className="w-12 h-12 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
-                  style={{ backgroundColor: color }}
-                  onClick={() => console.log(`Selected color: ${color}`)}
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.9 }}
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.8 }}
-                  transition={{ duration: 0.2 }}
-                />
-              ))}
-            </AnimatePresence>
-          </div>
+          <input
+            type="number"
+            placeholder="Enter Average Return (μ)"
+            className="mb-2 p-2 rounded-md"
+            value={averageReturn === 0 ? "" : averageReturn}
+            onChange={(e) => setAverageReturn(Number(e.target.value))}
+          />
+          <input
+            type="number"
+            placeholder="Enter Risk-Free Rate (r)"
+            className="mb-2 p-2 rounded-md"
+            value={riskFreeRate === 0 ? "" : riskFreeRate}
+            onChange={(e) => setRiskFreeRate(Number(e.target.value))}
+          />
+          <input
+            type="number"
+            placeholder="Enter Variance (σ^2)"
+            className="mb-2 p-2 rounded-md"
+            value={variance === 0 ? "" : variance}
+            onChange={(e) => setVariance(Number(e.target.value))}
+          />
+          <button
+            onClick={calculateOptimalLeverage}
+            className="mb-2 p-2 bg-primary text-white rounded-md"
+          >
+            Calculate Optimal Leverage
+          </button>
+          {optimalLeverage !== null && (
+            <div className="mt-2">
+              <strong>Optimal Leverage: </strong>
+              {optimalLeverage}
+            </div>
+          )}
         </FloatingPanelBody>
         <FloatingPanelFooter>
           <FloatingPanelCloseButton />
         </FloatingPanelFooter>
       </FloatingPanelContent>
     </FloatingPanelRoot>
-  )
-}
+  );
+};
 
 const ProbabilityRateCalculator = () => {
   const [winningProbability, setWinningProbability] = React.useState<number>(0);
@@ -115,10 +131,10 @@ const ProbabilityRateCalculator = () => {
   return (
     <FloatingPanelRoot>
       <FloatingPanelTrigger
-        title="Kelly Criterion Calculator"
+        title="Stop Loss"
         className="flex items-center space-x-2 px-4 py-2 bg-accent text-accent-foreground rounded-md hover:bg-accent/90 transition-colors"
       >
-        <span>Kelly Criterion</span>
+        <span>Stop Loss</span>
       </FloatingPanelTrigger>
       <FloatingPanelContent className="w-64">
         <FloatingPanelBody>
@@ -218,7 +234,7 @@ export function FloatingPanelComponent() {
     <div className="p-8 space-y-8">
       <div className="flex flex-col md:flex-row flex-wrap gap-4">
         <FloatingPanelInput />
-        <ColorPickerFloatingPanel />
+        <OptimalLeverageCalculator />
         <ProbabilityRateCalculator />
         <ImagePreviewFloatingPanel />
       </div>
