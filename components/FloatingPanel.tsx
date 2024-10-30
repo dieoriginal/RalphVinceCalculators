@@ -37,15 +37,7 @@ function FloatingPanelInput() {
           <FloatingPanelBody className="flex flex-row gap-9">
             
             <OptimalPositionSizeCalculator id="note-input" className="min-h-[100px]" />
-            <div className="text-sm text-muted-foreground border border-gray-300 bg-black-151 hover:bg-black-400 transition-colors rounded-lg p-7">
-              
-              <h1 className="text-lg font-extrabold text-center">Definitions</h1>
-                      <ul className="list-disc list-inside">
-              <li>F* is the optimal fraction of capital to risk</li>
-              <li>W is the winning percentage</li>
-              <li>L is the losing percentage</li>
-            </ul>
-            </div>
+           
           </FloatingPanelBody>
           <FloatingPanelFooter>
         

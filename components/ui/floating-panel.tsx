@@ -316,15 +316,33 @@ export function OptimalPositionSizeCalculator({
   className,
   id,
 }: OptimalPositionSizeCalculatorProps) {
-  const [inputAmount, setInputAmount] = React.useState<number>(0);
+  const [inputAmount, setInputAmount] = React.useState<number>(1000); // Default balance of 1000
   const [calculatedValue, setCalculatedValue] = React.useState<number | null>(null);
   const [finalCalculatedValue, setFinalCalculatedValue] = React.useState<number | null>(null);
+  const [profitFromMove, setProfitFromMove] = React.useState<number | null>(null);
+  const [currency, setCurrency] = React.useState<string>("USD");
+  const [leverage, setLeverage] = React.useState<number>(100);
+  const [percentageAim, setPercentageAim] = React.useState<number>(1);
 
   const calculatePercentage = () => {
     const result = inputAmount * 0.05; // Calculate 5%
     setCalculatedValue(result);
-    setFinalCalculatedValue(result * 0.33); // Calculate 5% * 33%
+    const finalValue = result * 0.33; // Calculate 5% * 33%
+    setFinalCalculatedValue(finalValue);
+
+    // Calculate the profit from a 2% favorable move with selected leverage
+    const targetMove = percentageAim / 100; // Convert percentage aim to decimal
+    const profit = finalValue * leverage * targetMove;
+    setProfitFromMove(profit);
   };
+
+  React.useEffect(() => {
+    if (finalCalculatedValue !== null) {
+      const targetMove = percentageAim / 100; // Convert percentage aim to decimal
+      const profit = finalCalculatedValue * leverage * targetMove;
+      setProfitFromMove(profit);
+    }
+  }, [leverage, percentageAim, finalCalculatedValue]);
 
   return (
     <div className={cn("flex flex-col", className)}>
@@ -349,7 +367,7 @@ export function OptimalPositionSizeCalculator({
       <input
         type="text"
         placeholder="5% - k% = bp–q/b"
-        className="mb-2 p-2 rounded-md text-gray-500" // Added gray color
+        className="mb-2 p-2 rounded-md"
         value={calculatedValue !== null ? calculatedValue.toFixed(2) : ""}
         readOnly
       />
@@ -370,7 +388,68 @@ export function OptimalPositionSizeCalculator({
       </button>
       {finalCalculatedValue !== null && (
         <div className="mt-2">
-          <strong>You should trade with {finalCalculatedValue.toFixed(2)} with High Leverage</strong>
+          <strong>
+            You should trade with{" "}
+            <span className="text-green-500">{finalCalculatedValue.toFixed(2)}</span>{" "}
+            according to the Kelly Criterion
+          </strong>
+          <p className="text-gray-500">
+            With <span className="text-green-500"><select
+          className="mr-2 p-2 rounded-md"
+          onChange={(e) => setLeverage(Number(e.target.value))}
+        >
+          <option value="10">10x</option>
+          <option value="20">20x</option>
+          <option value="50">50x</option>
+          <option value="100">100x</option>
+          <option value="500">500x</option>
+          <option value="1000">1000x</option>
+        </select></span>a 
+        
+        
+        <span className="text-green-500">
+          
+          <select
+          className="mr-2 p-2 rounded-md"
+          onChange={(e) => setPercentageAim(Number(e.target.value))}
+        >
+          <option value="1">1%</option>
+          <option value="2">2%</option>
+          <option value="3">3%</option>
+          <option value="4">4%</option>
+          <option value="5">5%</option>
+          <option value="6">6%</option>
+          <option value="7">7%</option>
+          <option value="8">8%</option>
+          <option value="9">9%</option>
+          <option value="10">10%</option>
+          <option value="11">11%</option>
+          <option value="12">12%</option>
+          <option value="13">13%</option>
+          <option value="14">14%</option>
+          <option value="15">15%</option>
+          <option value="16">16%</option>
+          <option value="17">17%</option>
+          <option value="18">18%</option>
+          <option value="19">19%</option>
+          <option value="20">20%</option>
+          <option value="21">21%</option>
+          <option value="22">22%</option>
+          <option value="23">23%</option>
+          <option value="24">24%</option>
+          <option value="25">25%</option>
+          <option value="26">26%</option>
+          <option value="27">27%</option>
+          <option value="28">28%</option>
+          <option value="29">29%</option>
+          <option value="30">30%</option>
+        </select>
+        
+        </span> move makes you{" "} or lose{" "}
+            <span className="text-green-500">{profitFromMove !== null ? profitFromMove.toFixed(2) : ""}</span>
+          </p>
+       
+       
         </div>
       )}
     </div>
